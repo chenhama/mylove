@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="ChenWei 2025.2.18">
+    <meta name="description" content="逃げ出すボールを掴め！ - 透明惑星から宇宙空間に逃げ出す精霊ボールを捕まえる爽快な３Dゲーム。反射神経と戦略を駆使して、高得点を目指そう！。ChenWei制作、2025年2月18日リリース。">
+    <title>逃げ出すボールを掴め！</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        #scene-container { 
+            width: 100%; 
+            flex-grow: 1;
+        }
+        #stats-container {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+        }
+        #stats {
+            display: inline-block;
+            color: #FFA500; /* 橘黄色文字 */
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+            border-radius: 10px;
+            line-height: 1.5;
+        }
+        .stat-number {
+            display: inline-block;
+            min-width: 1.5em;
+            text-align: center;
+            color: #00ff00; /* 亮绿色数字 */
+            font-family: 'Seven Segment', monospace; /* 使用Seven Segment字体 */
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; /* 荧光效果 */
+        }
+        /* 响应式设计 */
+        @media screen and (max-width: 600px) {
+            #stats {
+                font-size: 4.5vw;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            #stats > * {
+                margin: 0 5px;
+            }
+        }
+
+        @media screen and (min-width: 601px) {
+            #stats {
+                font-size: 22px;
+            }
+        }
+    
+        /* 按键设计 */
+        #control-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        #control-buttons button {
+            padding: 10px 20px;
+            font-size: 18px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.4);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+            opacity: 0.7; /* 70%の不透明度（お好みで0.1から0.9に調整） */
+        }
+
+        #slowDownButton {
+            background: linear-gradient(to bottom, #4CAF50, #45a049);
+        }
+        #slowDownButton:hover {
+            background: linear-gradient(to bottom, #45a049, #4CAF50);
+        }
+        #slowDownButton:active {
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transform: translateY(2px);
+        }
+
+        #addBallsButton {
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+        }
+        #addBallsButton:hover {
+            background: linear-gradient(to bottom, #2980b9, #3498db);
+        }
+        #addBallsButton:active {
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transform: translateY(2px);
+        }
+
+        #speedUpButton {
+            background: linear-gradient(to bottom, #e74c3c, #c0392b);
+        }
+        #speedUpButton:hover {
+            background: linear-gradient(to bottom, #c0392b, #e74c3c);
+        }
+        #speedUpButton:active {
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transform: translateY(2px);
+        }
+
+        /* 响应式设计 */
+        @media screen and (max-width: 600px) {
+            #control-buttons {
+                padding: 0 10px;
+            }
+
+            #control-buttons button {
+                font-size: 14px;
+                padding: 8px 10px;
+            }
+        }
+        /* 添加计数器样式 */
+        #counter {
+            position: fixed;
+            font-size: 6px;
+            bottom: 10px;
+            left: 5px;
+            z-index: 1;
+        }
+        /* 【追加】スコア数字が弾むアニメーション */
+        .score-bounce {
+            animation: scoreBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scoreBounce {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.6); color: #ffff00; text-shadow: 0 0 15px #ffff00; }
+            100% { transform: scale(1); }
+        }
+
+        /* 【追加】コンボ表示用のスタイル */
+        #combo-display {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(30px, 6vw, 80px); /* 画面サイズに応じてフォントサイズを調整 */
+            font-family: 'Impact', sans-serif;
+            font-weight: bold;
+            color: #ff9900;
+            text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            pointer-events: none; /* クリックを邪魔しないように */
+            z-index: 100;
+            opacity: 0;
+            white-space: nowrap; /* テキストが改行されないように */
+        }
+
+        /* 【追加】コンボ表示のアニメーション */
+        .combo-animation {
+            animation: comboFade 1.5s ease-out forwards;
+        }
+
+        @keyframes comboFade {
+            0%   { opacity: 1; transform: translateX(-50%) scale(0.8); }
+            20%  { opacity: 1; transform: translateX(-50%) scale(1.2); }
+            80%  { opacity: 1; transform: translateX(-50%) scale(1.2); }
+            100% { opacity: 0; transform: translateX(-50%) scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div id="stats-container">
+        <div id="stats">
+            合計:<span id="total" class="stat-number">0</span>  残留:<span id="remaining" class="stat-number">0</span>  逃出:<span id="escaped" class="stat-number">0</span>  消滅:<span id="destroyed" class="stat-number">0</span>
+        </div>
+        <div id="combo-display"></div>
+    </div>
+    <div id="scene-container"></div>
+    <div id="control-buttons">
+        <button id="slowDownButton">減速</button>
+        <button id="addBallsButton">ボール追加</button>
+        <button id="speedUpButton">加速</button>
+    </div>
+    <!-- 添加计数器 -->
+    <div id="counter">
+        <img src="http://www.zh.em-net.ne.jp/cgi-bin/Count.cgi?md=5&trgb=000000&srgb=00ff00&df=KillBall.dat" alt="アクセスカウンター">
+    </div>
+    <div id="author-info" style="position: fixed; bottom: 10px; right: 5px; font-size: 12px; color: #888;">
+        &copy; 2025 ChenWei
+    </div>
+    <!-- 引入 Three.js 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // グローバル変数
+        let scene, camera, renderer, sphere, lines, textureLoader;
+        let smallSpheres = [], smallSphereVelocities = [];
+        let explosions = []; 
+        let audioContext;
+        let totalCreatedSpheres, totalSpheres, escapedSpheres, destroyedSpheres;
+        let statsElement;
+        let frameCount = 0;
+        let speedMultiplier = 1;
+
+        // UI演出用のグローバル変数
+        let lastDestroyedCount = 0;
+        let comboCount = 0;
+        let comboTimer = null;
+        let comboDisplay;
+        const COMBO_TIMEOUT = 2000;
+
+        // 特殊ボール用の設定
+        const BOMB_RADIUS = 1.5;
+        const SLOW_DURATION = 5000;
+        const SLOW_FACTOR = 0.3;
+        let isSlowed = false;
+        let slowTimer = null;
+        
+        // 螺旋ボール用の設定
+        const SPIRAL_RADIUS = 0.4;
+        const SPIRAL_FREQUENCY = 5;
+
+        // コンテナ浮遊と背景回転用の設定
+        let skySphere;
+        let containerVelocity = new THREE.Vector3();
+        const CONTAINER_FLOAT_SPEED = 0.005; // 容器の浮遊速度
+        const CONTAINER_BOUNDS = 3;          // 容器が移動できる範囲
+        const BACKGROUND_ROTATION_SPEED = -0.0005; // 背景の回転速度
+
+        const MAX_SPEED = 3;
+        const MIN_SPEED = 0.3;
+        const SPHERE_RADIUS = 2;
+        const SMALL_SPHERE_RADIUS = 0.1;
+        const SMALL_SPHERE_COUNT = 100;
+        const ESCAPE_VELOCITY = 0.0;
+        const ESCAPE_LATITUDE = 25.7 * Math.PI / 180;
+        const GRAVITY = new THREE.Vector3(0, -0.001, 0);
+        const COLLISION_DAMPING = 1;
+        const SPHERE_ROTATION_SPEED = 0.003;
+        const FRICTION_FACTOR = 0.01;
+        const CLICK_THRESHOLD = 0.5;
+        const MAX_SPHERES = 200;
+
+        // 初期化関数
+        function init() {
+            comboDisplay = document.getElementById('combo-display');
+            totalCreatedSpheres = SMALL_SPHERE_COUNT;
+            totalSpheres = SMALL_SPHERE_COUNT;
+            escapedSpheres = 0;
+            destroyedSpheres = 0;
+            updateStats();
+
+            scene = new THREE.Scene();
+            textureLoader = new THREE.TextureLoader();
+
+            createSkySphere();
+
+            containerVelocity.set((Math.random() - 0.5) * CONTAINER_FLOAT_SPEED, (Math.random() - 0.5) * CONTAINER_FLOAT_SPEED, (Math.random() - 0.5) * CONTAINER_FLOAT_SPEED);
+
+            // コンテナ(sphere)を生成
+            createSphere();
+
+            // ボールを作成
+            for (let i = 0; i < SMALL_SPHERE_COUNT; i++) {
+                createSmallSphere();
+            }
+
+            const speedUpButton = document.getElementById('speedUpButton');
+            const slowDownButton = document.getElementById('slowDownButton');
+            const addBallsButton = document.getElementById('addBallsButton');
+            speedUpButton.addEventListener('click', speedUp);
+            slowDownButton.addEventListener('click', slowDown);
+            addBallsButton.addEventListener('click', addTenBalls);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('scene-container').appendChild(renderer.domElement);
+            
+            initAudio();
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            addLighting();
+
+            window.addEventListener('resize', onWindowResize, false);
+            renderer.domElement.addEventListener('click', onCanvasClick, false);
+            animate();
+        }
+        //スコアが増えた時にアニメーションを追加するよう変更
+        function updateStats() {
+            const destroyedStatElement = document.getElementById('destroyed');
+            if (destroyedSpheres > lastDestroyedCount) {
+                destroyedStatElement.classList.add('score-bounce');
+                destroyedStatElement.addEventListener('animationend', () => {
+                    destroyedStatElement.classList.remove('score-bounce');
+                }, { once: true });
+            }
+            document.getElementById('total').textContent = totalCreatedSpheres;
+            document.getElementById('remaining').textContent = totalSpheres;
+            document.getElementById('escaped').textContent = escapedSpheres;
+            destroyedStatElement.textContent = destroyedSpheres;
+            lastDestroyedCount = destroyedSpheres;
+            const addBallsButton = document.getElementById('addBallsButton');
+            addBallsButton.disabled = totalSpheres >= 200;
+        }
+
+        function speedUp() { if (speedMultiplier < MAX_SPEED) { speedMultiplier += 0.1; updateSpeedMultiplier(); } }
+        function slowDown() { if (speedMultiplier > MIN_SPEED) { speedMultiplier -= 0.1; updateSpeedMultiplier(); } }
+        function updateSpeedMultiplier() { for (let i = 0; i < smallSphereVelocities.length; i++) { smallSphereVelocities[i].normalize().multiplyScalar(0.02 * speedMultiplier); } document.getElementById('speedUpButton').disabled = (speedMultiplier >= MAX_SPEED); document.getElementById('slowDownButton').disabled = (speedMultiplier <= MIN_SPEED); }
+        function initAudio() { audioContext = new (window.AudioContext || window.webkitAudioContext)(); const b = audioContext.createBuffer(1, 1, 22050); const s = audioContext.createBufferSource(); s.buffer = b; s.connect(audioContext.destination); s.start(); }
+
+        // 回転する背景（スカイスフィア）を作成する関数
+        function createSkySphere() {
+            const skyGeometry = new THREE.SphereGeometry(500, 60, 40);
+
+            const skyMaterial = new THREE.MeshBasicMaterial({
+                map: textureLoader.load('https://img-baofun.zhhainiao.com/fs/0a13188055e512295cf90d5cf1c7614c.jpg'),
+                side: THREE.BackSide // 球の内側にテクスチャを貼る
+            });
+
+            skySphere = new THREE.Mesh(skyGeometry, skyMaterial);
+            scene.add(skySphere);
+        }
+        function createSphere() {
+            const geometry = new THREE.SphereGeometry(SPHERE_RADIUS, 64, 64);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x00BFFF, opacity: 0.4, transparent: true,//コンテナ不透明度
+                shininess: 100, side: THREE.DoubleSide, depthWrite: false
+            });
+            sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+            lines = createLines();
+            sphere.add(lines);
+        }
+
+        function createLines() {
+            const escapePhi = ESCAPE_LATITUDE; const linesObject = new THREE.Object3D();
+            for (let i = 0; i < 12; i++) { const m = new THREE.LineBasicMaterial({ color: 0xAAAAAA, transparent: true, opacity: 0.5 }); const p = []; for (let j = 0; j <= 180; j++) { const phi = (j / 180) * Math.PI; if (phi > escapePhi) { p.push(new THREE.Vector3(SPHERE_RADIUS * Math.sin(phi) * Math.cos((i / 6) * Math.PI), SPHERE_RADIUS * Math.cos(phi), SPHERE_RADIUS * Math.sin(phi) * Math.sin((i / 6) * Math.PI))); } } linesObject.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(p), m)); }
+            for (let i = 0; i < 8; i++) { const m = new THREE.LineBasicMaterial({ color: 0xAAAAAA, transparent: true, opacity: 0.5 }); const p = []; const phi = (i / 7) * Math.PI; for (let j = 0; j <= 100; j++) { const t = (j / 50) * Math.PI; p.push(new THREE.Vector3(SPHERE_RADIUS * Math.sin(phi) * Math.cos(t), SPHERE_RADIUS * Math.cos(phi), SPHERE_RADIUS * Math.sin(phi) * Math.sin(t))); } linesObject.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(p), m)); }
+            const eP = []; for (let j = 0; j <= 100; j++) { const t = (j / 50) * Math.PI; eP.push(new THREE.Vector3(SPHERE_RADIUS * Math.sin(escapePhi) * Math.cos(t), SPHERE_RADIUS * Math.cos(escapePhi), SPHERE_RADIUS * Math.sin(escapePhi) * Math.sin(t))); }
+            // 経緯線はコンテナ(sphere)の子オブジェクトとする
+            sphere.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(eP), new THREE.LineBasicMaterial({ color: 0xAAAAAA, linewidth: 2 })));
+            return linesObject;
+        }
+
+        function addLighting() { scene.add(new THREE.AmbientLight(0x404040, 0.6)); const dL = new THREE.DirectionalLight(0xffffff, 0.8); dL.position.set(5, 5, 5); dL.castShadow = true; dL.shadow.mapSize.width = 1024; dL.shadow.mapSize.height = 1024; scene.add(dL); scene.add(new THREE.HemisphereLight(0xffffbb, 0x080820, 0.5)); }
+
+        function createSmallSphere() {
+            const geometry = new THREE.SphereGeometry(SMALL_SPHERE_RADIUS, 32, 32);
+            let material, ballType = 'normal', explosionColor = new THREE.Color(Math.random() * 0xffffff);
+            const rand = Math.random();
+            if (rand < 0.07) { ballType = 'bomb'; explosionColor = new THREE.Color(0xff4500); material = new THREE.MeshPhongMaterial({ color: 0x222222, emissive: 0xff0000, shininess: 100 }); }
+            else if (rand < 0.14) { ballType = 'slow'; explosionColor = new THREE.Color(0x00ff7f); material = new THREE.MeshPhongMaterial({ color: 0x00d141, specular: 0x99ffbb, shininess: 90 }); }
+            else if (rand < 0.21) { ballType = 'spiral'; explosionColor = new THREE.Color(0x9400D3); material = new THREE.MeshPhongMaterial({ color: 0x8A2BE2, emissive: 0x9932CC, shininess: 100 }); }
+            else { 
+                const urls = [
+                    'https://threejs.org/examples/textures/planets/moon_1024.jpg',      // 月の表面
+                    'https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg', // 地球 (新規)
+                    'https://threejs.org/examples/textures/water.jpg',                  // 水面
+                    'https://threejs.org/examples/textures/hardwood2_diffuse.jpg',      // 木目
+                    'https://threejs.org/examples/textures/lava/lavatile.jpg'           // 溶岩タイル
+                ]; 
+                const randomTextureUrl = urls[Math.floor(Math.random() * urls.length)];
+                const texture = textureLoader.load(randomTextureUrl);
+                material = new THREE.MeshPhongMaterial({ map: texture, color: 0xffffff, shininess: 50 }); 
+            }
+            
+            const smallSphere = new THREE.Mesh(geometry, material);
+            smallSphere.ballType = ballType;
+            smallSphere.customColor = explosionColor;
+            smallSphere.state = 'inside';
+            do { smallSphere.position.set((Math.random() - 0.5) * 2 * SPHERE_RADIUS, (Math.random() - 0.5) * 2 * SPHERE_RADIUS, (Math.random() - 0.5) * 2 * SPHERE_RADIUS); }
+            while (smallSphere.position.length() > SPHERE_RADIUS - SMALL_SPHERE_RADIUS);
+            sphere.add(smallSphere); 
+            smallSpheres.push(smallSphere);
+            smallSphereVelocities.push(new THREE.Vector3((Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03).multiplyScalar(speedMultiplier));
+        }
+        function addTenBalls() { for (let i = 0; i < 10; i++) { if (totalSpheres < 200) { createSmallSphere(); totalCreatedSpheres++; totalSpheres++; } } updateStats(); }
+        function playPopSound() { if(audioContext.state==='suspended')audioContext.resume();const o=audioContext.createOscillator(),g=audioContext.createGain();o.connect(g);g.connect(audioContext.destination);o.type='sine';o.frequency.setValueAtTime(440,audioContext.currentTime);o.frequency.exponentialRampToValueAtTime(0.01,audioContext.currentTime+0.2);g.gain.setValueAtTime(1,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime+0.2);o.start(audioContext.currentTime);o.stop(audioContext.currentTime+0.2);}
+        function playBubbleSound() { if(audioContext.state==='suspended')audioContext.resume();const o=audioContext.createOscillator(),g=audioContext.createGain();o.connect(g);g.connect(audioContext.destination);o.type='sine';o.frequency.setValueAtTime(150,audioContext.currentTime);o.frequency.exponentialRampToValueAtTime(500,audioContext.currentTime+0.1);g.gain.setValueAtTime(0,audioContext.currentTime);g.gain.linearRampToValueAtTime(0.5,audioContext.currentTime+0.01);g.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime+0.1);o.start(audioContext.currentTime);o.stop(audioContext.currentTime+0.1);}
+        function createExplosion(pos,col){const pC=50,g=new THREE.BufferGeometry(),ps=new Float32Array(pC*3),cs=new Float32Array(pC*3),sz=new Float32Array(pC),vs=[],sC=new THREE.Color(col);for(let i=0;i<pC;i++){const t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1),x=SMALL_SPHERE_RADIUS*Math.sin(p)*Math.cos(t),y=SMALL_SPHERE_RADIUS*Math.sin(p)*Math.sin(t),z=SMALL_SPHERE_RADIUS*Math.cos(p);ps[i*3]=pos.x+x;ps[i*3+1]=pos.y+y;ps[i*3+2]=pos.z+z;cs[i*3]=sC.r+(Math.random()-0.5)*0.1;cs[i*3+1]=sC.g+(Math.random()-0.5)*0.1;cs[i*3+2]=sC.b+(Math.random()-0.5)*0.1;sz[i]=Math.random()*0.03+0.01;vs.push(new THREE.Vector3(x,y,z).normalize().multiplyScalar(0.05));}g.setAttribute('position',new THREE.BufferAttribute(ps,3));g.setAttribute('color',new THREE.BufferAttribute(cs,3));g.setAttribute('size',new THREE.BufferAttribute(sz,1));const m=new THREE.PointsMaterial({size:0.05,vertexColors:true,blending:THREE.AdditiveBlending,transparent:true,sizeAttenuation:true}),pts=new THREE.Points(g,m);scene.add(pts);explosions.push({particles:pts,velocities:vs,time:0});}
+        
+        function destroyBall(index) {
+            // 安全対策：指定されたインデックスにボールが存在しない場合は何もしない
+            if (!smallSpheres[index]) return;
+
+            // コンボのタイマーをリセットし、カウントを増やす
+            clearTimeout(comboTimer);
+            comboCount++;
+            if (comboCount > 10) {
+                comboDisplay.textContent = `${comboCount} COMBO!`;
+                comboDisplay.classList.remove('combo-animation');
+                void comboDisplay.offsetWidth;
+                comboDisplay.classList.add('combo-animation');
+            }
+            comboTimer = setTimeout(() => {
+                comboCount = 0;
+                comboDisplay.classList.remove('combo-animation');
+            }, COMBO_TIMEOUT);
+
+            const sphereToDestroy = smallSpheres[index];
+            const worldPosition = new THREE.Vector3();
+            sphereToDestroy.getWorldPosition(worldPosition);
+
+            // 爆発とサウンドの再生
+            createExplosion(worldPosition, sphereToDestroy.customColor);
+            playPopSound();
+
+            destroyedSpheres++;
+            totalSpheres--;
+
+            // シーンからボールを削除し、管理用の配列からも取り除く
+            sphereToDestroy.parent.remove(sphereToDestroy);
+            smallSpheres.splice(index, 1);
+            smallSphereVelocities.splice(index, 1);
+        }
+
+        function onCanvasClick(event) {
+            event.preventDefault(); mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            let clickableSpheres = [];
+            for (let i = 0; i < smallSpheres.length; i++) {
+                if (smallSpheres[i].escaped) {
+                    const worldPosition = new THREE.Vector3();
+                    smallSpheres[i].getWorldPosition(worldPosition);
+                    const distance = raycaster.ray.distanceToPoint(worldPosition);
+                    if (distance < CLICK_THRESHOLD) { clickableSpheres.push({ sphere: smallSpheres[i], distance: distance, index: i }); }
+                }
+            }
+            if (clickableSpheres.length > 0) {
+                clickableSpheres.sort((a, b) => a.distance - b.distance);
+                const { sphere: clickedSphere, index: clickedIndex } = clickableSpheres[0];
+                switch (clickedSphere.ballType) {
+                    case 'bomb':
+                        const bombWorldPosition = new THREE.Vector3(); clickedSphere.getWorldPosition(bombWorldPosition);
+                        const indicesToDestroy = [clickedIndex];
+                        for (let i = smallSpheres.length - 1; i >= 0; i--) {
+                            if (i === clickedIndex) continue;
+                            const otherWorldPos = new THREE.Vector3(); smallSpheres[i].getWorldPosition(otherWorldPos);
+                            if (smallSpheres[i].escaped && otherWorldPos.distanceTo(bombWorldPosition) < BOMB_RADIUS) { indicesToDestroy.push(i); }
+                        }
+                        indicesToDestroy.sort((a, b) => b - a).forEach(index => destroyBall(index));
+                        break;
+                    case 'slow':
+                        destroyBall(clickedIndex); isSlowed = true; clearTimeout(slowTimer);
+                        slowTimer = setTimeout(() => { isSlowed = false; }, SLOW_DURATION);
+                        break;
+                    default: destroyBall(clickedIndex); break;
+                }
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            frameCount++;
+
+            // 1. コンテナ(sphere)の浮遊処理 & 境界チェック
+            sphere.position.add(containerVelocity);
+            if (Math.abs(sphere.position.x) > CONTAINER_BOUNDS) containerVelocity.x *= -1;
+            if (Math.abs(sphere.position.y) > CONTAINER_BOUNDS) containerVelocity.y *= -1;
+            if (Math.abs(sphere.position.z) > CONTAINER_BOUNDS) containerVelocity.z *= -1;
+
+            // 2. コンテナと背景の回転
+            sphere.rotation.y += SPHERE_ROTATION_SPEED;
+            if (skySphere) skySphere.rotation.y += BACKGROUND_ROTATION_SPEED;
+
+            // 3. カメラを更新してコンテナを追従
+            camera.position.copy(sphere.position).add(new THREE.Vector3(2, 6, 5)); //カメラ位置
+            camera.lookAt(sphere.position);
+
+            const currentSlowFactor = isSlowed ? SLOW_FACTOR : 1.0;
+
+            for (let i = smallSpheres.length - 1; i >= 0; i--) {
+                const ball = smallSpheres[i];
+                const velocity = smallSphereVelocities[i];
+                const velocityForFrame = velocity.clone().multiplyScalar(currentSlowFactor);
+
+                if (ball.escaped) {
+                    // 【脱出後のボールの処理（ワールド座標系）】
+                    if (ball.ballType === 'spiral') {
+                        if (!ball.spiralAnchorPath) { // 初回のみ
+                            ball.spiralAnchorPath = ball.position.clone(); // 現在地をアンカーに
+                            const forward = velocity.clone().normalize();
+                            const tempUp = new THREE.Vector3(0, 1, 0);
+                            ball.spiralRight = new THREE.Vector3().crossVectors(forward, tempUp).normalize();
+                            if (ball.spiralRight.lengthSq() < 0.1) ball.spiralRight.set(1, 0, 0);
+                            ball.spiralUp = new THREE.Vector3().crossVectors(ball.spiralRight, forward).normalize();
+                            ball.spiralAngle = 0;
+                        }
+                        ball.spiralAnchorPath.add(velocityForFrame); // アンカーを直進させる
+                        ball.spiralAngle += SPIRAL_FREQUENCY * 0.016;
+                        const offset = ball.spiralRight.clone().multiplyScalar(SPIRAL_RADIUS * Math.cos(ball.spiralAngle))
+                            .add(ball.spiralUp.clone().multiplyScalar(SPIRAL_RADIUS * Math.sin(ball.spiralAngle)));
+                        ball.position.copy(ball.spiralAnchorPath).add(offset);
+                    } else {
+                        ball.position.add(velocityForFrame);
+                    }
+                } else {
+                    // 【コンテナ内のボールの処理（ローカル座標系）】
+                    ball.position.add(velocityForFrame);
+
+                    const latitude = Math.PI / 2 - Math.acos(ball.position.y / SPHERE_RADIUS);
+                    if (ball.position.length() + SMALL_SPHERE_RADIUS > SPHERE_RADIUS) {
+                        const normal = ball.position.clone().normalize();
+                        velocity.reflect(normal);
+                        ball.position.copy(normal.multiplyScalar(SPHERE_RADIUS - SMALL_SPHERE_RADIUS));
+                        const tangent = new THREE.Vector3(0, 1, 0).cross(normal).normalize();
+                        velocity.add(tangent.multiplyScalar(FRICTION_FACTOR * SPHERE_ROTATION_SPEED));
+                    }
+
+                    if (velocity.length() > ESCAPE_VELOCITY && latitude > Math.PI / 2 - ESCAPE_LATITUDE) {
+                        ball.escaped = true;
+                        playBubbleSound();
+                        escapedSpheres++;
+                        
+                        // ワールド座標に変換してシーンに再配置
+                        const worldPosition = new THREE.Vector3();
+                        ball.getWorldPosition(worldPosition);
+                        velocity.applyQuaternion(sphere.quaternion); // 速度ベクトルもワールド座標系に変換
+                        
+                        scene.add(ball); // 親をsphereからsceneに変更
+                        ball.position.copy(worldPosition);
+                    }
+                }
+                
+                // コンテナ内のボール同士の衝突判定
+                for (let j = i - 1; j >= 0; j--) {
+                    const otherBall = smallSpheres[j];
+                    if (otherBall.escaped || ball.escaped) continue;
+                    if (ball.position.distanceTo(otherBall.position) < 2 * SMALL_SPHERE_RADIUS) {
+                        const normal = ball.position.clone().sub(otherBall.position).normalize();
+                        const relVel = velocity.clone().sub(smallSphereVelocities[j]);
+                        const impulse = normal.clone().multiplyScalar(-2 * relVel.dot(normal) / 2);
+                        velocity.add(impulse);
+                        smallSphereVelocities[j].sub(impulse);
+                    }
+                }
+            }
+
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                const exp = explosions[i]; exp.time += 0.016;
+                const posAttr = exp.particles.geometry.getAttribute('position');
+                for (let j = 0; j < exp.velocities.length; j++) {
+                    const x = posAttr.getX(j) + exp.velocities[j].x;
+                    const y = posAttr.getY(j) + exp.velocities[j].y;
+                    const z = posAttr.getZ(j) + exp.velocities[j].z;
+                    posAttr.setXYZ(j, x, y, z);
+                    exp.velocities[j].y -= 0.0005;
+                }
+                posAttr.needsUpdate = true;
+                if (exp.time >= 1.5) { scene.remove(exp.particles); explosions.splice(i, 1); }
+            }
+
+            if (frameCount % 5 === 0) updateStats();
+            if (renderer && scene && camera) renderer.render(scene, camera);
+        }
+
+        function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }
+        init();
+    </script>
+  </body>
+</html>
