@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-60VF5VKXDC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-60VF5VKXDC');
+    </script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+      <nav  style="background-color: #008B8B;">
+        <ul>
+          <li><a href="#introduction">リカンベント自転車</a></li>
+          <li><a href="#experience">走る様子</a></li>
+          <li><a href="#media">サイクリングルート</a></li>
+          <li><a href="#comments">コメント</a></li>
+        </ul>
+      </nav>
+    <title>サイクリングライフ</title>
+    <header style="background-image: url(media/header.png);">
+      <h1>サイクリングライフ</h1>
+    </header>
+  </head>
+  <body>
+    <main>
+    <div class="carousel">
+      <button class="carousel-btn left"><</button>
+      <div class="carousel-slide">
+        <img src="media/IMG_20181028_170025.jpg" alt="">
+        <img src="media/IMG20200530161543.jpg" alt="">
+        <img src="media/IMG20200517112214.jpg" alt="">
+        <img src="media/IMG20221119141242.jpg" alt="">
+        <img src="https://via.placeholder.com/300x200/0000ff" alt="">
+        <img src="https://via.placeholder.com/300x200/ffff00" alt="">
+      </div>
+      <button class="carousel-btn right">></button>
+    </div>
+     <section id="introduction">
+        <h2>所有している２台のリカンベント自転車</h2>
+        <table>
+          <tr style="background-color: #f0f0f0;">
+            <td>黄ちゃん　2018年10月購入</td>
+            <td>青ちゃん　2021年11月購入</td>
+          </tr>
+          <tr>
+            <td><img id="listImage" src="media/IMG_20181027_145000.jpg"></td>
+            <td><img id="listImage" src="media/IMG_20211122.jpg"></td>
+          </tr>
+          <tr style="background-color: #f0f0f0;">
+            <td>屋根付きに改造</td>
+            <td>ワンちゃん搭載</td>
+          </tr>
+          <tr>
+            <td><img id="listImage" src="media/IMG20211110162305.jpg"></td>
+            <td><img id="listImage" src="media/IMG20220709112747.jpg"></td>
+          </tr>
+        </table>
+      </section>
+      <section id="experience">
+        <h2>走る様子</h2>
+        <div class="media-container">
+          <video preload="auto" playsinline muted autoplay loop>
+            <source src="media/mmexport1638088929325.mp4" type="video/mp4">
+          </video>
+	  <iframe width="560" height="315" src="https://www.youtube.com/embed/0G5q4C8EFOA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </section>
+      <section id="media">
+        <h2>サイクリングルート</h2>
+        <p>これまでに走ったいくつかのライドを紹介します：</p>
+                <ul>
+                   <li>マリン山脈</li>
+                   <li>サンタクルーズの海岸</li>
+                   <li>ハンボルトのレッドウッド</li>
+               </ul>
+      </section>
+      <section id="comments">
+        <h2>コメント</h2>
+        </form>
+        <form id="commentForm">
+          <label for="name">氏名:</label>
+          <input type="text" id="name-input" required>
+          <label for="email">　Email:</label>
+          <input type="email" id="email-input" required>
+          <hr>
+          <label for="comment">コメント投稿:</label>
+          <textarea id="comment-input" required></textarea>
+                    <div align="center">
+            <input type="submit" value="コメント投稿">
+          </div>
+        </form>
+        <form id="comments-container">
+	  <div id="comments"></div>
+	      <!-- 添加计数器 -->
+    <div id="counter">
+        <img src="/cgi-bin/Count.cgi?df=hpabc-aa.dat" alt="访问计数器">
+    </div>
+        </form>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 My Cycling Hobby</p>
+    </footer>
+  </body>
+    <script src="InputComment.js"></script>
+  <script>
+      const carousel = document.querySelector(".carousel");
+      const slide = document.querySelector(".carousel-slide");
+      const leftBtn = document.querySelector(".left");
+      const rightBtn = document.querySelector(".right");
+
+      const slideWidth = slide.offsetWidth / 3; // 3枚のスライドの幅
+      let currentIndex = 0;
+
+      // 左側のボタンが押された時の処理
+      leftBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          slide.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+        }
+      });
+
+      // 右側のボタンが押された時の処理
+      rightBtn.addEventListener("click", () => {
+        if (currentIndex < 2) {
+          currentIndex++;
+          slide.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+        }
+      });
+  </script>
+</html>
