@@ -11,7 +11,7 @@ document.getElementById("commentForm").addEventListener("submit", function(event
     const comment = document.getElementById("comment-input").value;
 
     // --- AWS Lambdaへの送信処理 ---
-    const functionUrl = "ここに発行された関数URLを貼り付け"; // ← 重要：発行されたURLに書き換えてください
+    const functionUrl = "https://xbnnj7cd3hy6w3rxkh7zxb24n40vjcyi.lambda-url.ap-southeast-2.on.aws/"; // ← 重要：発行されたURLに書き換えてください
 
     const payload = {
         name: name,
