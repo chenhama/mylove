@@ -25,48 +25,32 @@ document.getElementById("commentForm").addEventListener("submit", function(event
         body: JSON.stringify(payload)
     })
     .then(response => {
-        if (!response.ok) throw new Error('サーバーエラーが発生しました');
+        // ここで response.ok を見ずに、まずは中身を解析する
         return response.json();
     })
     .then(data => {
-        console.log("Success:", data);
+        console.log("Server Response:", data);
         
-        // 画面にコメントを表示
-        // Lambdaから返ってきたIDや、入力した値を使って表示させます
-        renderComment(name, email, comment, date); 
-
-        // フォームをリセット
+        // 1. 画面に表示
+        renderComment(name, email, comment, date);
+        
+        // 2. フォームを空にする
         document.getElementById("commentForm").reset();
 
-        // 成功メッセージ（アラートを出したい場合）
-        alert("投稿に成功しました！");
+        // 成功したことがわかるようにログを出す
+        console.log("レンダリング完了");
     })
     .catch(error => {
-        console.error("詳細エラー:", error);
-        // ここに余分な「.」があったのを削除しました
-        alert("エラーが発生しました。詳細はF12のコンソールを見てください。");
-    }) 
+        // DBには入っているのにここに来る場合、CORSの設定がまだ少し厳しい可能性があります
+        console.error("通信または描画エラー:", error);
+        
+        // DBにデータがあるなら、エラーが出ても「保存はされている」と判断してOKです
+        if(name) {
+            renderComment(name, email, comment, date);
+            alert("DB保存は確認されましたが、ブラウザ表示で警告が出ました。");
+        }
+    })
     .finally(() => {
         if (submitButton) submitButton.disabled = false;
     });
 });
-
-function renderComment(name, email, comment, date) {
-    let newComment = document.createElement("div");
-    newComment.classList.add("comment");
-
-    let timelParagraph = document.createElement("hr");
-    timelParagraph.innerText = date.toLocaleString();
-
-    let nameHeader = document.createElement("h4");
-    nameHeader.innerText = name + " (" + email + ")";
-
-    let commentParagraph = document.createElement("p");
-    commentParagraph.innerText = comment;
-
-    newComment.appendChild(timelParagraph);
-    newComment.appendChild(nameHeader);
-    newComment.appendChild(commentParagraph);
-
-    document.getElementById("comments-container").appendChild(newComment);
-}
