@@ -41,10 +41,10 @@ document.getElementById("commentForm").addEventListener("submit", function(event
         // 4. フォームをリセット
         document.getElementById("commentForm").reset();
     })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("保存に失敗しました。時間をおいて再度お試しください。");
-    })
+	.catch(error => {
+	    console.error("詳細エラー:", error);
+	    alert("エラーが発生しました。詳細はF12のコンソールを見てください。");
+	});
     .finally(() => {
         // ボタンを元に戻す
         if (submitButton) submitButton.disabled = false;
