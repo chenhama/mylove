@@ -30,8 +30,16 @@ document.getElementById("commentForm").addEventListener("submit", function(event
     })
     .then(data => {
         console.log("Success:", data);
-        renderComment(name, email, comment, date);
+        
+        // 画面にコメントを表示
+        // Lambdaから返ってきたIDや、入力した値を使って表示させます
+        renderComment(name, email, comment, date); 
+
+        // フォームをリセット
         document.getElementById("commentForm").reset();
+
+        // 成功メッセージ（アラートを出したい場合）
+        alert("投稿に成功しました！");
     })
     .catch(error => {
         console.error("詳細エラー:", error);
