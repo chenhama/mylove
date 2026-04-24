@@ -12,23 +12,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const lambdaUrl = `https://nmstvhbcku6y5v7umf2biyjioy0gahef.lambda-url.ap-southeast-2.on.aws/?page=${pageName}`;
 
     fetch(lambdaUrl)
-        .then(response => response.json())
-        .then(data => {
-            // 数字を6桁の文字列にする (例: "000044")
-            const countString = String(data.count).padStart(6, '0');
-            
-            // 中身を空にする
-            counterDisplay.innerHTML = '';
+            .then(response => response.json())
+            .then(data => {
+                const countString = String(data.count).padStart(6, '0'); // 6桁
+                displayArea.innerHTML = ''; // "..." を消す
 
-            // 1文字ずつdivを作成して追加
-            for (let char of countString) {
-                const digitDiv = document.createElement('div');
-                digitDiv.className = `digit num-${char}`;
-                counterDisplay.appendChild(digitDiv); // ここで変数名を合わせる
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            counterDisplay.innerText = "Error";
-        });
-});
+                for (let char of countString) {
+                    const div = document.createElement('div');
+                    // digit クラスと num-X クラスの両方を付与
+                    div.className = `digit num-${char}`;
+                    displayArea.appendChild(div);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                displayArea.innerText = "Error";
+            });
+    });
