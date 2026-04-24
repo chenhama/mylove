@@ -93,35 +93,11 @@
           </div>
         </form>
         <form id="comments-container">
-	  <div id="comments"></div>
-<div id="counter">
-    <p>あなたは <span id="count-number">...</span> 番目の訪問者です</p>
-</div>
-
-  <script>
-      // ページ読み込み時にLambdaを叩く
-      window.onload = function() {
-          const counterElement = document.getElementById('count-number');
-          const pageName = "home"; // ページごとに識別したい場合はここを変える
-
-          // 先ほどのLambda関数URLを指定（リージョン修正済みのもの）
-          const lambdaUrl = "https://nmstvhbcku6y5v7umf2biyjioy0gahef.lambda-url.ap-southeast-2.on.aws/?page=" + pageName;
-
-          fetch(lambdaUrl)
-              .then(response => {
-                  if (!response.ok) throw new Error('Network response was not ok');
-                  return response.json();
-              })
-              .then(data => {
-                  // Lambdaから返ってきた count を表示
-                  counterElement.innerText = data.count;
-              })
-              .catch(error => {
-                  console.error('Error:', error);
-                  counterElement.innerText = "Error";
-              });
-      };
-  </script>
+          <div id="comments"></div>
+          <div id="counter">
+              <p>あなたは <span id="count-number">...</span> 番目の訪問者です</p>
+          </div>
+          <script src="counter.js"></script>
         </form>
       </section>
     </main>
