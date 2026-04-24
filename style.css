@@ -170,21 +170,22 @@ footer {
 }
 
 .digit {
-  width: 20px;  /* 1文字の幅 */
-  height: 40px; /* 1文字の高さ。画像と同じにする */
-  background-image: url('media/digits.png'); /* 作成した画像 */
+  width: 100px;  /* 20px から 100px に変更 */
+  height: 140px; /* 40px から 140px に変更 */
+  background-image: url('media/digits.png'); 
   background-repeat: no-repeat;
   margin: 0 1px;
+  display: inline-block; /* これを足しておくと安心です */
 }
 
-/* 各数字の表示位置を設定 (1文字20pxずらしていく) */
+/* 各数字の位置も 100px ずつずらすように修正 */
 .num-0 { background-position: 0px 0; }
-.num-1 { background-position: -20px 0; }
-.num-2 { background-position: -40px 0; }
-.num-3 { background-position: -60px 0; }
-.num-4 { background-position: -80px 0; }
-.num-5 { background-position: -100px 0; }
-.num-6 { background-position: -120px 0; }
-.num-7 { background-position: -140px 0; }
-.num-8 { background-position: -160px 0; }
-.num-9 { background-position: -180px 0; }
+.num-1 { background-position: -100px 0; }
+.num-2 { background-position: -200px 0; }
+.num-3 { background-position: -300px 0; }
+.num-4 { background-position: -400px 0; }
+.num-5 { background-position: -500px 0; }
+.num-6 { background-position: -600px 0; }
+.num-7 { background-position: -700px 0; }
+.num-8 { background-position: -800px 0; }
+.num-9 { background-position: -900px 0; }
