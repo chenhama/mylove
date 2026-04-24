@@ -2,11 +2,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const counterElement = document.getElementById('count-number');
-    
-    // もしHTMLに <span id="count-number"> がなければ何もしない（エラー防止）
     if (!counterElement) return;
 
-    const pageName = "home"; // ページ識別子
+    const pageName = counterElement.dataset.pageName; // ページ識別子
     const lambdaUrl = "https://nmstvhbcku6y5v7umf2biyjioy0gahef.lambda-url.ap-southeast-2.on.aws/?page=" + pageName;
 
     fetch(lambdaUrl)
