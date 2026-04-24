@@ -172,7 +172,7 @@ footer {
 .digit {
   width: 20px;  /* 1文字の幅 */
   height: 40px; /* 1文字の高さ。画像と同じにする */
-  background-image: url('digital_digits.png'); /* 作成した画像 */
+  background-image: url('media/digits.png'); /* 作成した画像 */
   background-repeat: no-repeat;
   margin: 0 1px;
 }
