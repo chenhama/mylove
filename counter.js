@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!counterElement) return;
 
     const pageName = "home"; // ページ識別子
-    const lambdaUrl = "https://あなたのLambdaURL.lambda-url.ap-southeast-2.on.aws/?page=" + pageName;
+    const lambdaUrl = "https://nmstvhbcku6y5v7umf2biyjioy0gahef.lambda-url.ap-southeast-2.on.aws/?page=" + pageName;
 
     fetch(lambdaUrl)
         .then(response => {
