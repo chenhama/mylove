@@ -171,14 +171,17 @@ footer {
   transform-origin: left top;
 }
 
-/* 数字1文字の定義（ここは画像本来のサイズを指定） */
 .digit {
-  width: 100px;  /* 修正不要：画像1文字分の幅 */
-  height: 140px; /* 修正不要：画像1文字分の高さ */
-  background-image: url('digits.png'); /* フォルダ名に注意（直下ならこれでOK） */
+  width: 100px;
+  height: 140px;
+  background-image: url('digits.png');
   background-repeat: no-repeat;
+  background-size: 1000px 140px; /* 画像の全体サイズを固定 */
   display: inline-block;
-  margin: 0;
+  
+  /* デバッグ用：画像が出ない時は赤い箱が見えるようにする */
+  background-color: red; 
+  border: 1px solid white;
 }
 
 /* 各数字の切り出し（100pxずつマイナス方向へ） */
