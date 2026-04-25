@@ -161,29 +161,30 @@ footer {
         right: 0;
       }
 /* カウンターの土台 */
-.digital-display {
-  display: inline-flex;
-  background-color: #010a14;
-  padding: 5px;
-  border-radius: 4px;
-  /* 1文字100pxは大きすぎるので、ここで30%に縮小して枠に収める */
-  transform: scale(0.3);
-  transform-origin: left top;
-}
-
 .digit {
   width: 100px;
   height: 140px;
-  /* ./ をつけて同じフォルダにあることを明示 */
-  background-image: url('./digits.png') !important; 
+  background-image: url('digits.png'); 
   background-repeat: no-repeat;
-  /* 重要：画像全体のサイズ（10文字分 = 1000px）を明示する */
+  /* 画像全体の横幅(1000px)を明示して、ズレを防止します */
   background-size: 1000px 140px; 
   display: inline-block;
-  /* デバッグ用：これが映らなければCSSの読み込み失敗 */
-  border: 2px solid red !important; 
+  /* 文字同士の隙間をゼロにして、綺麗に並べます */
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
 }
 
+.digital-display {
+  display: inline-flex;
+  background-color: #010a14;
+  padding: 8px; /* 枠に少し余裕を持たせます */
+  border: 2px solid #333; /* 枠線を少し明るくして立体感を出します */
+  border-radius: 4px;
+  /* 仕上げ：お好みの大きさに縮小（0.3〜0.5の間で調整してください） */
+  transform: scale(0.4);
+  transform-origin: left top;
+}
 /* 100pxずつずらす設定（そのまま） */
 .num-0 { background-position: 0px 0; }
 .num-1 { background-position: -100px 0; }
