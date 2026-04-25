@@ -134,18 +134,43 @@
     canvas.fullscreen-active {
         cursor: none;
     }
-    #counter {
-        position: fixed;
-        font-size: 6px;
-        bottom: 10px;
-        left: 5px;
-        z-index: 5;
+    /* カウンターの土台 */
+    .digit {
+    width: 100px;
+    height: 140px;
+    background-image: url('digits.png'); 
+    background-repeat: no-repeat;
+    /* 画像全体の横幅(1000px)を明示して、ズレを防止します */
+    background-size: 1000px 140px; 
+    display: inline-block;
+    /* 文字同士の隙間をゼロにして、綺麗に並べます */
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
     }
+    .digital-display {
+    /* 仕上げ：お好みの大きさに縮小（0.1〜0.2の間で調整してください） */
+    transform: scale(0.15);
+    }
+    /* 100pxずつずらす設定（そのまま） */
+    .num-0 { background-position: -4px 0; }
+    .num-1 { background-position: -104px 0; }
+    .num-2 { background-position: -204px 0; }
+    .num-3 { background-position: -304px 0; }
+    .num-4 { background-position: -404px 0; }
+    .num-5 { background-position: -504px 0; }
+    .num-6 { background-position: -604px 0; }
+    .num-7 { background-position: -704px 0; }
+    .num-8 { background-position: -804px 0; } /* 191行目の -160px もこれに修正してください */
+    .num-9 { background-position: -904px 0; }
 </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
-    <div id="counter"><img src="http://www.zh.em-net.ne.jp/cgi-bin/Count.cgi?md=5&trgb=000000&srgb=00ff00&df=Block.dat" alt="アクセスカウンター"></div>
+    <div id="counter-images" class="digital-display" data-page-name="top-page">
+          <span id="count-number" data-page-name="top-page">...</span> 
+    </div>
+    <script src="counter.js"></script>
     <div id="author-info" style="position: fixed; bottom: 10px; right: 5px; font-size: 12px; color: #888;">© 2025 ChenWei</div>
     <button id="startButton" class="game-button">開始</button>
     <button id="resumeButton" class="game-button">再開</button>
