@@ -152,32 +152,33 @@
     overflow: visible; 
     }
 
-    .digit {
-    width: 40px;
-    height: 56px;
-    background-image: url('digits.png');
-    background-repeat: no-repeat;
-    
-    /* 修正：10文字分で400px。
-        もしこれでもズレるなら 404px など微調整が必要な場合があります */
-    background-size: 400px 56px; 
-    
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    vertical-align: top;
-    }
-    /* 100pxずつずらす設定（そのまま） */
-    .num-0 { background-position: -4px 0; }
-    .num-1 { background-position: -104px 0; }
-    .num-2 { background-position: -204px 0; }
-    .num-3 { background-position: -304px 0; }
-    .num-4 { background-position: -404px 0; }
-    .num-5 { background-position: -504px 0; }
-    .num-6 { background-position: -604px 0; }
-    .num-7 { background-position: -704px 0; }
-    .num-8 { background-position: -804px 0; } /* 191行目の -160px もこれに修正してください */
-    .num-9 { background-position: -904px 0; }
+.digit {
+  width: 20px;          /* 指定のサイズ */
+  height: 30px;         /* 指定のサイズ */
+  background-image: url('digits.png');
+  background-repeat: no-repeat;
+  
+  /* 重要：10文字分で 20px * 10 = 200px に設定 */
+  background-size: 200px 30px; 
+  
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+}
+
+/* 20pxずつ左にずらします。
+   元画像の4pxのズレも縮小（4 * 0.2 = 0.8）して反映させます */
+.num-0 { background-position: -0.8px 0; }
+.num-1 { background-position: -20.8px 0; }
+.num-2 { background-position: -40.8px 0; }
+.num-3 { background-position: -60.8px 0; }
+.num-4 { background-position: -80.8px 0; }
+.num-5 { background-position: -100.8px 0; }
+.num-6 { background-position: -120.8px 0; }
+.num-7 { background-position: -140.8px 0; }
+.num-8 { background-position: -160.8px 0; } /* これで正しい位置になります */
+.num-9 { background-position: -180.8px 0; }
 </style>
 </head>
 <body>
