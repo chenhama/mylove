@@ -160,26 +160,28 @@ footer {
       .carousel-btn.right {
         right: 0;
       }
-/* カウンター */
+/* カウンターの土台 */
 .digital-display {
-  display: inline-flex; /* 横並びにする */
+  display: inline-flex;
   background-color: #010a14;
   padding: 5px;
   border-radius: 4px;
-  /* そのままだと大きいので 0.3倍(30%) に縮小 */
+  /* 100pxの数字は大きすぎるので、ここで全体を0.3倍（30%）にギュッと縮小します */
   transform: scale(0.3);
   transform-origin: left top;
 }
 
+/* 数字1文字の定義（ここは画像本来のサイズを指定） */
 .digit {
-  width: 100px;  /* ここが 20px だと、画像の一部しか見えません */
-  height: 140px; 
-  background-image: url('digits.png'); /* 画像の場所は合っていますか？ */
+  width: 100px;  /* 修正不要：画像1文字分の幅 */
+  height: 140px; /* 修正不要：画像1文字分の高さ */
+  background-image: url('digits.png'); /* フォルダ名に注意（直下ならこれでOK） */
   background-repeat: no-repeat;
   display: inline-block;
+  margin: 0;
 }
 
-/* 100px ずつ左にずらします。マイナス記号を忘れずに！ */
+/* 各数字の切り出し（100pxずつマイナス方向へ） */
 .num-0 { background-position: 0px 0; }
 .num-1 { background-position: -100px 0; }
 .num-2 { background-position: -200px 0; }
