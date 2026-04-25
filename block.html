@@ -137,48 +137,36 @@
     }
     /* カウンターの土台 */
     .digital-display {
-    position: fixed;
-    bottom: 10px;
-    left: 5px;
-    z-index: 5;
-    display: inline-flex;
-    background-color: #010a14;
-    padding: 2px 4px;
-    border-radius: 2px;
-    
-    /* 6桁分（40px * 6 = 240px）以上の幅を確保する */
-    min-width: 245px; 
-    /* もしはみ出しても隠さないようにする */
-    overflow: visible; 
+        display: inline-flex;
+        background-color: #010a14;
+        padding: 2px 4px;
+        border-radius: 2px;
+        overflow: visible; 
+    }
+    .digit {
+    width: 15px;          /* 指定の幅 */
+    height: 18px;         /* 指定の高さ */
+    background-image: url('digits.png');
+    background-repeat: no-repeat;
+    /* 10文字分なので 15px * 10 = 150px に設定 */
+    background-size: 150px 18px; 
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
     }
 
-.digit {
-  width: 20px;          /* 指定のサイズ */
-  height: 30px;         /* 指定のサイズ */
-  background-image: url('digits.png');
-  background-repeat: no-repeat;
-  
-  /* 重要：10文字分で 20px * 10 = 200px に設定 */
-  background-size: 200px 30px; 
-  
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  vertical-align: top;
-}
-
-/* 20pxずつ左にずらします。
-   元画像の4pxのズレも縮小（4 * 0.2 = 0.8）して反映させます */
-.num-0 { background-position: -0.8px 0; }
-.num-1 { background-position: -20.8px 0; }
-.num-2 { background-position: -40.8px 0; }
-.num-3 { background-position: -60.8px 0; }
-.num-4 { background-position: -80.8px 0; }
-.num-5 { background-position: -100.8px 0; }
-.num-6 { background-position: -120.8px 0; }
-.num-7 { background-position: -140.8px 0; }
-.num-8 { background-position: -160.8px 0; } /* これで正しい位置になります */
-.num-9 { background-position: -180.8px 0; }
+    /* 15pxずつずらし、4pxのズレ(4 * 0.15 = 0.6)を補正 */
+    .num-0 { background-position: -0.6px 0; }
+    .num-1 { background-position: -15.6px 0; }
+    .num-2 { background-position: -30.6px 0; }
+    .num-3 { background-position: -45.6px 0; }
+    .num-4 { background-position: -60.6px 0; }
+    .num-5 { background-position: -75.6px 0; }
+    .num-6 { background-position: -90.6px 0; }
+    .num-7 { background-position: -105.6px 0; }
+    .num-8 { background-position: -120.6px 0; }
+    .num-9 { background-position: -135.6px 0; }
 </style>
 </head>
 <body>
