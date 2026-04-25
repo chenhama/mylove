@@ -176,14 +176,8 @@ footer {
 }
 
 .digital-display {
-  display: inline-flex;
-  background-color: #010a14;
-  padding: 8px; /* 枠に少し余裕を持たせます */
-  border: 2px solid #333; /* 枠線を少し明るくして立体感を出します */
-  border-radius: 4px;
   /* 仕上げ：お好みの大きさに縮小（0.3〜0.5の間で調整してください） */
-  transform: scale(0.4);
-  transform-origin: left top;
+  transform: scale(0.3);
 }
 /* 100pxずつずらす設定（そのまま） */
 .num-0 { background-position: 0px 0; }
