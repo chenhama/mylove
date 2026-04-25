@@ -136,21 +136,36 @@
         cursor: none;
     }
     /* カウンターの土台 */
+    .digital-display {
+    position: fixed;
+    bottom: 10px;
+    left: 5px;
+    z-index: 5;
+    display: inline-flex;
+    background-color: #010a14;
+    padding: 2px 4px;
+    border-radius: 2px;
+    
+    /* 6桁分（40px * 6 = 240px）以上の幅を確保する */
+    min-width: 245px; 
+    /* もしはみ出しても隠さないようにする */
+    overflow: visible; 
+    }
+
     .digit {
-    width: 100px;
-    height: 140px;
-    background-image: url('digits.png'); 
+    width: 40px;
+    height: 56px;
+    background-image: url('digits.png');
     background-repeat: no-repeat;
-    /* 画像全体の横幅(1000px)を明示して、ズレを防止します */
-    background-size: 1000px 140px; 
+    
+    /* 修正：10文字分で400px。
+        もしこれでもズレるなら 404px など微調整が必要な場合があります */
+    background-size: 400px 56px; 
+    
     display: inline-block;
-    /* 文字同士の隙間をゼロにして、綺麗に並べます */
     margin: 0;
     padding: 0;
     vertical-align: top;
-    }
-    .digital-display {
-        border-radius: 2px;
     }
     /* 100pxずつずらす設定（そのまま） */
     .num-0 { background-position: -4px 0; }
