@@ -135,7 +135,7 @@
     canvas.fullscreen-active {
         cursor: none;
     }
-    /* カウンターの土台 */
+    /* カウンター */
     .digital-display {
         display: inline-flex;
         background-color: #010a14;
@@ -144,18 +144,17 @@
         overflow: visible; 
     }
     .digit {
-    width: 15px;          /* 指定の幅 */
-    height: 20px;         /* 指定の高さ */
-    background-image: url('digits.png');
-    background-repeat: no-repeat;
-    /* 10文字分なので 15px * 10 = 150px に設定 */
-    background-size: 150px 20px; 
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    vertical-align: top;
+        width: 15px;          /* 指定の幅 */
+        height: 20px;         /* 指定の高さ */
+        background-image: url('digits.png');
+        background-repeat: no-repeat;
+        /* 10文字分なので 15px * 10 = 150px に設定 */
+        background-size: 150px 20px; 
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        vertical-align: top;
     }
-
     /* 15pxずつずらし、4pxのズレ(4 * 0.15 = 0.6)を補正 */
     .num-0 { background-position: -0.6px 0; }
     .num-1 { background-position: -15.6px 0; }
