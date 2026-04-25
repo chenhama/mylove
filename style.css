@@ -174,7 +174,7 @@ footer {
 .digit {
   width: 100px;  /* ここが 20px だと、画像の一部しか見えません */
   height: 140px; 
-  background-image: url('media/digits.png'); /* 画像の場所は合っていますか？ */
+  background-image: url('digits.png'); /* 画像の場所は合っていますか？ */
   background-repeat: no-repeat;
   display: inline-block;
 }
