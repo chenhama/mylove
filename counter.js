@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const pageName = target.dataset.pageName || 'default';
-    const lambdaUrl = `https://nmstvhbcku6y5v7umf2biyjioy0gahef.lambda-url.ap-southeast-2.on.aws/?page=${pageName}`;
+    const lambdaUrl = `https://2444m63jltrinl2w72egnvhcga0vtein.lambda-url.ap-northeast-1.on.aws/?page=${pageName}`;
 
     fetch(lambdaUrl)
         .then(response => response.json())
