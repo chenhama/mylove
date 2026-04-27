@@ -8,7 +8,7 @@ document.getElementById("commentForm").addEventListener("submit", function(event
     const email = document.getElementById("email-input").value;
     const comment = document.getElementById("comment-input").value;
 
-    const functionUrl = "https://xbnnj7cd3hy6w3rxkh7zxb24n40vjcyi.lambda-url.ap-southeast-2.on.aws/";
+    const functionUrl = "https://2444m63jltrinl2w72egnvhcga0vtein.lambda-url.ap-northeast-1.on.aws/";
 
     const payload = {
         name: name,
