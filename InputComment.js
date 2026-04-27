@@ -54,3 +54,28 @@ document.getElementById("commentForm").addEventListener("submit", function(event
         if (submitButton) submitButton.disabled = false;
     });
 });
+// --- 既存のコードの一番下に追加 ---
+
+/**
+ * 送信したコメントを即座に画面に表示するための関数
+ */
+function renderComment(name, email, comment, date) {
+    const commentList = document.getElementById("comment-list"); // 表示先のIDに合わせてください
+    if (!commentList) return;
+
+    const commentElement = document.createElement("div");
+    commentElement.className = "comment-item"; // CSSスタイル用
+    
+    // 表示する内容を組み立て
+    commentElement.innerHTML = `
+        <hr>
+        <div style="border-left: 4px solid #007bff; padding-left: 10px; margin-bottom: 20px;">
+            <p><strong>名前:</strong> ${name}</p>
+            <p><strong>コメント:</strong> ${comment}</p>
+            <p><small>投稿日: ${date.toLocaleString()}</small></p>
+        </div>
+    `;
+
+    // リストの先頭に追加
+    commentList.prepend(commentElement);
+}
